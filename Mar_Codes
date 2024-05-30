@@ -66,6 +66,9 @@ disp('Časové konstanty (čitatel):');
 disp(time_constants_zeros);
 
 
+
+
+
 % Definování přenosové funkce soustavy G(s)
 numerator_G = [5];
 denominator_G = [6 11 6 1];
