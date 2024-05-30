@@ -1,0 +1,86 @@
+ZOBD?
+% Definování přenosové funkce soustavy G(s)
+numerator_G = 10;
+denominator_G = conv([5 1], conv([2 1], [1 1]));
+G = tf(numerator_G, denominator_G);
+
+% Získání časových konstant (polů)
+poles = pole(G);
+time_constants = 1 ./ abs(poles);
+min_time_constant = min(time_constants);
+
+% Periody vzorkování T_s
+T_s = min_time_constant / 10;
+
+% Parametry PID regulátoru
+Kp = 5;
+Ti = 2;
+Td = 1;
+
+% Výpočet koeficientů pro ZOBD metodu
+d0 = Kp * (1 + T_s / (2 * Ti) + Td / T_s);
+d1 = -Kp * (1 - T_s / (2 * Ti) + 2 * Td / T_s);
+d2 = (Kp * Td) / T_s;
+
+% Zobrazení koeficientů
+disp('Koeficienty PSD regulátoru:');
+disp(['d0 = ', num2str(d0)]);
+disp(['d1 = ', num2str(d1)]);
+disp(['d2 = ', num2str(d2)]);
+
+Grz=tf([d0 d1 d2],[1 -1 0],T_s,'variable','z^-1') 
+
+
+
+% Definování čitatel a jmenovatel přenosové funkce
+num = [5 3]; % Čitatel: 6s + 2
+den = [1 6 11 6]; % Jmenovatel: 15s^2 + 8s + 1
+
+% Vytvoření přenosové funkce
+G = tf(num, den);
+
+% Zobrazení přenosové funkce
+disp('Přenosová funkce G(s):');
+G
+
+
+% Získání pólů a nul přenosové funkce
+poles = pole(G);
+zeros = zero(G);
+
+% Výpočet časových konstant pro póly a nuly
+time_constants_poles = 1 ./ abs(poles);
+time_constants_zeros = 1 ./ abs(zeros);
+
+% Zobrazení výsledků
+disp('Póly přenosové funkce:');
+disp(poles);
+
+disp('Nuly přenosové funkce:');
+disp(zeros);
+
+disp('Časové konstanty (jmenovatel):');
+disp(time_constants_poles);
+
+disp('Časové konstanty (čitatel):');
+disp(time_constants_zeros);
+
+
+% Definování přenosové funkce soustavy G(s)
+numerator_G = [5];
+denominator_G = [6 11 6 1];
+G = tf(numerator_G, denominator_G);
+
+% Definování přenosové funkce regulátoru G_R(s)
+numerator_GR = [0.1 0.245];
+denominator_GR = [1 0];
+G_R = tf(numerator_GR, denominator_GR);
+
+% Výpočet přenosu regulační odchylky G_e(s)
+G_e = feedback(1, G * G_R);
+
+% Zobrazení výsledků
+disp('Přenos regulační odchylky G_e(s):');
+G_e
+
+
